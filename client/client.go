@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"sort"
 	"sync"
 
 	"github.com/diverged/tavily-go/models"
@@ -134,13 +135,23 @@ func (c *TavilyClient) GetCompanyInfo(query string, searchDepth string, maxResul
 	}
 
 	var allResults []models.SearchResult
+	seenURLs := make(map[string]bool)
+
 	for results := range resultsChan {
-		allResults = append(allResults, results...)
+		for _, result := range results {
+			if !seenURLs[result.URL] {
+				allResults = append(allResults, result)
+				seenURLs[result.URL] = true
+			}
+		}
 	}
 
-	// Sort results by score (descending) and limit to maxResults
-	// Note: Implement a sorting function for SearchResult slice
-	// sortSearchResults(allResults)
+	// Sort results by score (descending)
+	sort.Slice(allResults, func(i, j int) bool {
+		return allResults[i].Score > allResults[j].Score
+	})
+
+	// Limit to maxResults
 	if len(allResults) > maxResults {
 		allResults = allResults[:maxResults]
 	}
