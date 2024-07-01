@@ -49,18 +49,15 @@ func TestGetMaxTokensFromString(t *testing.T) {
 }
 
 func TestGetMaxItemsFromList(t *testing.T) {
-    tests := []struct {
-        name      string
-        input     string
-        maxTokens int
-        expected  string
-    }{
-        {"Short string", "Hello world", 5, "Hello world"},
-        {"Long string", "This is a longer string that should be truncated", 5, "This is a"},
-    }
+	tests := []struct {
+		name      string
+		input     []interface{}
+		maxTokens int
+		expected  string
+	}{
 		{
-			name: "Single item",
-			input: []interface{}{"hello"},
+			name:      "Single item",
+			input:     []interface{}{"hello"},
 			maxTokens: 10,
 			expected:  `["hello"]`,
 		},
