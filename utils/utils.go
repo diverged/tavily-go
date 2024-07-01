@@ -4,55 +4,66 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/diverged/tavily-go/config"
+	"github.com/pkoukk/tiktoken-go"
 )
 
-// GetTotalTokensFromString calculates the total number of tokens in a string
-// Note: This is a simplified version and may not be as accurate as the Python tiktoken library
-func GetTotalTokensFromString(s string, encodingName string) int {
-	// Simple approximation: count words and punctuation
-	return len(strings.Fields(s)) + strings.Count(s, ".") + strings.Count(s, ",") + strings.Count(s, "!") + strings.Count(s, "?")
+// GetMaxItemsFromList returns a JSON string of items from a list, limited by max tokens
+const DefaultEncoding = "cl100k_base" // This is the encoding used by GPT-3.5 and GPT-4 models
+
+func GetTotalTokensFromString(s string, encodingName string) (int, error) {
+	tke, err := tiktoken.GetEncoding(encodingName)
+	if err != nil {
+		return 0, err
+	}
+	tokens := tke.Encode(s, nil, nil)
+	return len(tokens), nil
 }
 
-// GetMaxTokensFromString extracts a substring with a maximum number of tokens
-func GetMaxTokensFromString(s string, maxTokens int, encodingName string) string {
-	words := strings.Fields(s)
-	result := []string{}
-	count := 0
+func GetMaxTokensFromString(s string, maxTokens int, encodingName string) (string, error) {
+	tke, err := tiktoken.GetEncoding(encodingName)
+	if err != nil {
+		return "", err
+	}
+	tokens := tke.Encode(s, nil, nil)
+	if len(tokens) <= maxTokens {
+		return s, nil
+	}
+	decodedTokens := tke.Decode(tokens[:maxTokens])
+	return strings.TrimSpace(string(decodedTokens)), nil
+}
 
-	for _, word := range words {
-		wordTokens := GetTotalTokensFromString(word, encodingName)
-		if count+wordTokens > maxTokens {
-			break
-		}
-		result = append(result, word)
-		count += wordTokens
+func GetMaxItemsFromList(items []interface{}, maxTokens int) (string, error) {
+	tke, err := tiktoken.GetEncoding(DefaultEncoding)
+	if err != nil {
+		return "", err
 	}
 
-	return strings.Join(result, " ")
-}
+	result := make([]interface{}, 0)
+	currentTokens := 2 // Start with 2 tokens for the opening and closing brackets of the JSON array
 
-// GetMaxItemsFromList returns a JSON string of items from a list, limited by max tokens
-func GetMaxItemsFromList(data []interface{}, maxTokens int) (string, error) {
-	result := []string{}
-	currentTokens := 0
-
-	for _, item := range data {
+	for _, item := range items {
 		itemJSON, err := json.Marshal(item)
 		if err != nil {
 			return "", err
 		}
 
-		itemStr := string(itemJSON)
-		newTotalTokens := currentTokens + GetTotalTokensFromString(itemStr, config.DefaultModelEncoding)
+		itemTokens := tke.Encode(string(itemJSON), nil, nil)
+		if len(result) > 0 {
+			currentTokens++ // Add 1 token for the comma separator
+		}
 
-		if newTotalTokens > maxTokens {
+		if currentTokens+len(itemTokens) > maxTokens {
 			break
 		}
 
-		result = append(result, itemStr)
-		currentTokens = newTotalTokens
+		result = append(result, item)
+		currentTokens += len(itemTokens)
 	}
 
-	return "[" + strings.Join(result, ",") + "]", nil
+	resultJSON, err := json.Marshal(result)
+	if err != nil {
+		return "", err
+	}
+
+	return string(resultJSON), nil
 }
