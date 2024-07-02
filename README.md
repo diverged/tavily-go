@@ -1,6 +1,6 @@
 # tavily-go
 
-A Go client for the Tavily API.
+An unofficial Go client for the Tavily search API, modeled closely on the official [Tavily Python Wrapper](https://github.com/tavily-ai/tavily-python).
 
 ## Installation
 
@@ -12,7 +12,7 @@ go get github.com/diverged/tavily-go
 
 ## Usage
 
-Here's a simple example of how to use the tavily-go package:
+Below is a simple example of how to use the tavily-go package:
 
 ```go
 package main
@@ -55,4 +55,6 @@ func main() {
 }
 ```
 
-This example demonstrates how to create a client, perform a regular search, and a Q&A search using the tavily-go package.
+## License
+
+[MIT](https://github.com/diverged/tavily-go/LICENSE)
