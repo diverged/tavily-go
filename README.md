@@ -57,4 +57,4 @@ func main() {
 
 ## License
 
-[MIT](https://github.com/diverged/tavily-go/LICENSE)
+[MIT](https://github.com/diverged/tavily-go/blob/main/LICENSE)
