@@ -7,17 +7,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const DefaultEncoding = "gpt-3.5-turbo"
+
 func TestGetTotalTokensFromString(t *testing.T) {
-    tests := []struct {
-        name     string
-        input    string
-        expected int
-    }{
-        {"Empty string", "", 0},
-        {"Single word", "hello", 1},
-        {"Multiple words", "hello world", 2},
-        {"With punctuation", "Hello, world!", 4}, // Updated expected value
-    }
+	tests := []struct {
+		name     string
+		input    string
+		expected int
+	}{
+		{"Empty string", "", 0},
+		{"Single word", "hello", 1},
+		{"Multiple words", "hello world", 2},
+		{"With punctuation", "Hello, world!", 4}, // Updated expected value
+	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -36,7 +38,7 @@ func TestGetMaxTokensFromString(t *testing.T) {
 		expected  string
 	}{
 		{"Short string", "Hello world", 5, "Hello world"},
-		{"Long string", "This is a longer string that should be truncated", 5, "This is a"},
+		{"Long string", "This is a longer string that should be truncated", 5, "This is a longer string"},
 	}
 
 	for _, tt := range tests {
