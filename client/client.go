@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"reflect"
 	"sort"
@@ -45,7 +46,9 @@ func (c *TavilyClient) Search(req models.SearchRequest) (*models.SearchResponse,
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("API request failed with status code: %d", resp.StatusCode)
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		bodyString := string(bodyBytes)
+		return nil, fmt.Errorf("API request failed with status code: %d, response: %s", resp.StatusCode, bodyString)
 	}
 
 	var searchResp models.SearchResponse

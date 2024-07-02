@@ -3,16 +3,16 @@ package models
 // SearchRequest represents the structure for a search request
 type SearchRequest struct {
 	Query             string   `json:"query"`
-	SearchDepth       string   `json:"search_depth"`
-	Topic             string   `json:"topic"`
-	IncludeAnswer     bool     `json:"include_answer"`
-	IncludeRawContent bool     `json:"include_raw_content"`
-	MaxResults        int      `json:"max_results"`
+	SearchDepth       string   `json:"search_depth,omitempty"`
+	Topic             string   `json:"topic,omitempty"`
+	IncludeAnswer     bool     `json:"include_answer,omitempty"`
+	IncludeRawContent bool     `json:"include_raw_content,omitempty"`
+	MaxResults        int      `json:"max_results,omitempty"`
 	IncludeDomains    []string `json:"include_domains,omitempty"`
 	ExcludeDomains    []string `json:"exclude_domains,omitempty"`
-	IncludeImages     bool     `json:"include_images"`
+	IncludeImages     bool     `json:"include_images,omitempty"`
 	APIKey            string   `json:"api_key"`
-	UseCache          bool     `json:"use_cache"`
+	UseCache          bool     `json:"use_cache,omitempty"`
 }
 
 // SearchResult represents the structure for a search result
