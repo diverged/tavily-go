@@ -9,6 +9,8 @@ import (
 	"github.com/diverged/tavily-go/config"
 )
 
+// GetTotalTokensFromString calculates the total number of tokens in a given string
+// using the specified encoding model.
 func GetTotalTokensFromString(s string, encodingModel string) (int, error) {
 	tkm, err := tiktoken.EncodingForModel(encodingModel)
 	if err != nil {
@@ -18,6 +20,9 @@ func GetTotalTokensFromString(s string, encodingModel string) (int, error) {
 	return len(tokens), nil
 }
 
+// GetMaxTokensFromString truncates a given string to a maximum number of tokens
+// using the specified encoding model. It returns the truncated string and an error
+// if the encoding model is not found or if tokenization fails.
 func GetMaxTokensFromString(s string, maxTokens int, encodingModel string) (string, error) {
 	tkm, err := tiktoken.EncodingForModel(encodingModel)
 	if err != nil {
@@ -31,6 +36,9 @@ func GetMaxTokensFromString(s string, maxTokens int, encodingModel string) (stri
 	return strings.TrimSpace(string(decodedTokens)), nil
 }
 
+// GetMaxItemsFromList takes a list of items and returns a JSON string containing
+// as many items as possible without exceeding the specified maximum number of tokens.
+// It returns an error if JSON marshaling fails or if the encoding model is not found.
 func GetMaxItemsFromList(items []interface{}, maxTokens int) (string, error) {
 	tkm, err := tiktoken.EncodingForModel(config.DefaultModelEncoding)
 	if err != nil {

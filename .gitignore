@@ -21,6 +21,5 @@
 go.work
 go.work.sum
 
-# tavily-python/*
-GO-IMPLEMENTATION.md
+
 

@@ -13,14 +13,14 @@ import (
 	"github.com/diverged/tavily-go/utils"
 )
 
-// TavilyClient represents a client for the Tavily API
+// TavilyClient represents a client for the Tavily API.
 type TavilyClient struct {
 	BaseURL    string
 	APIKey     string
 	HTTPClient *http.Client
 }
 
-// NewTavilyClient creates a new TavilyClient
+// NewTavilyClient creates a new TavilyClient with the given API key.
 func NewTavilyClient(apiKey string) *TavilyClient {
 	return &TavilyClient{
 		BaseURL:    "https://api.tavily.com/search",
@@ -29,7 +29,7 @@ func NewTavilyClient(apiKey string) *TavilyClient {
 	}
 }
 
-// Search performs a search query
+// Search performs a search query using the Tavily API and returns the search response.
 func (c *TavilyClient) Search(req models.SearchRequest) (*models.SearchResponse, error) {
 	req.APIKey = c.APIKey
 
@@ -56,7 +56,7 @@ func (c *TavilyClient) Search(req models.SearchRequest) (*models.SearchResponse,
 	return &searchResp, nil
 }
 
-// GetSearchContext retrieves the search context for a query
+// GetSearchContext retrieves the search context for a query, limiting the response to the specified maximum number of tokens.
 func (c *TavilyClient) GetSearchContext(query string, searchDepth string, maxTokens int) (string, error) {
 	req := models.SearchRequest{
 		Query:       query,
@@ -84,7 +84,7 @@ func (c *TavilyClient) GetSearchContext(query string, searchDepth string, maxTok
 	return jsonContext, nil
 }
 
-// QnASearch performs a Q&A search
+// QnASearch performs a Q&A search using the Tavily API and returns the answer.
 func (c *TavilyClient) QnASearch(query string, searchDepth string) (string, error) {
 	req := models.SearchRequest{
 		Query:         query,
@@ -100,7 +100,7 @@ func (c *TavilyClient) QnASearch(query string, searchDepth string) (string, erro
 	return resp.Answer, nil
 }
 
-// GetCompanyInfo retrieves company information
+// GetCompanyInfo retrieves company information by performing searches across multiple topics and returns a sorted list of unique search results.
 func (c *TavilyClient) GetCompanyInfo(query string, searchDepth string, maxResults int) ([]models.SearchResult, error) {
 	topics := []string{"news", "general", "finance"}
 	var wg sync.WaitGroup
@@ -159,7 +159,7 @@ func (c *TavilyClient) GetCompanyInfo(query string, searchDepth string, maxResul
 	return allResults, nil
 }
 
-// Helper function to convert a slice of maps to a slice of interface{}
+// interfaceSlice is a helper function that converts a slice of maps to a slice of interface{}.
 func interfaceSlice(slice interface{}) []interface{} {
 	s := reflect.ValueOf(slice)
 	if s.Kind() != reflect.Slice {
